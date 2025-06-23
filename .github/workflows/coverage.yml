@@ -1,0 +1,40 @@
+name: Run Tests & Upload Coverage to Codecov
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with pcov
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: pcov
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit with Clover coverage
+        run: vendor/bin/phpunit --coverage-clover=coverage/clover.xml
+
+      - name: Show coverage file (debug)
+        run: |
+          ls -l coverage
+          head -n 20 coverage/clover.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: nsingh0410/currency_exchange
+          files: coverage/clover.xml
+          fail_ci_if_error: true
