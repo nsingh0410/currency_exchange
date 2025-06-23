@@ -16,7 +16,14 @@ class LandingController extends Controller
     {
         $this->landingService = $landingService;
     }
-
+    /**
+     * @OA\Get(
+     *     path="/api/landing",
+     *     summary="Landing data",
+     *     tags={"Landing"},
+     *     @OA\Response(response=200, description="Successful response")
+     * )
+     */
     public function index(): JsonResponse
     {
         Log::info('LandingController@index called');

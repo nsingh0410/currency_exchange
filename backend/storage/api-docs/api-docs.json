@@ -1,0 +1,54 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Currency Exchange API",
+        "description": "Documentation for Currency Exchange API built with Laravel and React",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local development server"
+        }
+    ],
+    "paths": {
+        "/api/currency/rates": {
+            "get": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Get live currency exchange rates",
+                "operationId": "65a9182f184c11d4193cec92612eb4eb",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/landing": {
+            "get": {
+                "tags": [
+                    "Landing"
+                ],
+                "summary": "Landing data",
+                "operationId": "966077d7d7ff7b23bfa5577c87ea278d",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Currency",
+            "description": "Currency"
+        },
+        {
+            "name": "Landing",
+            "description": "Landing"
+        }
+    ]
+}

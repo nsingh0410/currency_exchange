@@ -8,6 +8,17 @@ use App\Http\Controllers\Controller;
 
 class CurrencyController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/currency/rates",
+     *     summary="Get live currency exchange rates",
+     *     tags={"Currency"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"
+     *     )
+     * )
+     */
     public function getRates()
     {
         $currencies = ['USD', 'EUR', 'GBP', 'JPY'];
