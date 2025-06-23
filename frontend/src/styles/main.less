@@ -1,0 +1,43 @@
+@primary-color: #4f46e5;
+@secondary-color: #9333ea;
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.section {
+  padding: 100px 20px;
+  text-align: center;
+
+  &.hero {
+    background: linear-gradient(to right, @primary-color, @secondary-color);
+    color: white;
+
+    h1 {
+      font-size: 48px;
+    }
+
+    p {
+      font-size: 20px;
+    }
+  }
+
+  &.features {
+    background: #f9f9f9;
+
+    .feature-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  }
+
+  &.footer {
+    background: #111;
+    color: #fff;
+    padding: 50px 20px;
+  }
+}
