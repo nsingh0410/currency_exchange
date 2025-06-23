@@ -1,4 +1,4 @@
-name: Run Tests & Upload Coverage to Codecov
+name: PHPUnit Test & Code Coverage
 
 on:
   push:
@@ -14,19 +14,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP with pcov
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           coverage: pcov
 
       - name: Install PHP dependencies
+        working-directory: ./backend
         run: composer install --no-interaction --prefer-dist
 
       - name: Run PHPUnit with Clover coverage
+        working-directory: ./backend
         run: vendor/bin/phpunit --coverage-clover=coverage/clover.xml
 
       - name: Show coverage file (debug)
+        working-directory: ./backend
         run: |
           ls -l coverage
           head -n 20 coverage/clover.xml
@@ -36,5 +39,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: nsingh0410/currency_exchange
-          files: coverage/clover.xml
-          fail_ci_if_error: true
+          files: backend/coverage/clover.xml
