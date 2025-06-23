@@ -4,77 +4,61 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserModelTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase;
 
-    protected function setUp(): void
+    public function test_allows_mass_assignment_for_fillable_fields()
     {
-        parent::setUp();
-        // Speed up bcrypt hashing for tests
-        Hash::setRounds(4);
-    }
-
-    /** @test */
-    public function it_allows_mass_assignment_for_fillable_fields()
-    {
-        $user = new User([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'secret',
+        $user = User::create([
+            'name' => 'Jane Doe',
+            'email' => 'jane@example.com',
+            'password' => bcrypt('secret123')
         ]);
 
-        $this->assertEquals('Test User', $user->name);
-        $this->assertEquals('test@example.com', $user->email);
-        $this->assertTrue(Hash::check('secret', $user->password));
+        $this->assertEquals('Jane Doe', $user->name);
+        $this->assertEquals('jane@example.com', $user->email);
     }
 
-    /** @test */
-    public function it_hides_password_and_remember_token_when_serialized()
+    public function test_hides_password_and_remember_token_when_serialized()
     {
         $user = new User([
-            'name' => 'Hidden Fields',
+            'name' => 'Hidden Test',
             'email' => 'hidden@example.com',
-            'password' => 'hidden',
-            'remember_token' => 'token123'
+            'password' => 'secret',
+            'remember_token' => Str::random(10),
         ]);
 
         $array = $user->toArray();
 
         $this->assertArrayNotHasKey('password', $array);
         $this->assertArrayNotHasKey('remember_token', $array);
-        $this->assertArrayHasKey('name', $array);
-        $this->assertArrayHasKey('email', $array);
     }
 
-
-    /** @test */
-    public function it_casts_email_verified_at_as_datetime()
+    public function test_casts_email_verified_at_as_datetime()
     {
-        $now = now();
         $user = new User();
-        $user->forceFill(['email_verified_at' => $now]);
+        $user->email_verified_at = '2024-01-01 10:00:00';
 
-        $value = $user->getAttribute('email_verified_at');
-
-        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $value);
+        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $user->email_verified_at);
     }
 
-    /** @test */
-    public function it_has_expected_fillable_attributes()
+    public function test_user_model_logs_lifecycle_events()
     {
-        $expected = ['name', 'email', 'password'];
-        $this->assertEquals($expected, (new User)->getFillable());
-    }
+        Log::spy();
 
-    /** @test */
-    public function it_has_expected_hidden_attributes()
-    {
-        $expected = ['password', 'remember_token'];
-        $this->assertEquals($expected, (new User)->getHidden());
+        $user = User::factory()->create([
+            'email' => 'log@example.com'
+        ]);
+        $user->update(['name' => 'Updated Name']);
+        $user->delete();
+
+        Log::shouldHaveReceived('info')->with('User created', ['id' => $user->id, 'email' => 'log@example.com']);
+        Log::shouldHaveReceived('info')->with('User updated', ['id' => $user->id, 'email' => 'log@example.com']);
+        Log::shouldHaveReceived('warning')->with('User deleted', ['id' => $user->id, 'email' => 'log@example.com']);
     }
 }

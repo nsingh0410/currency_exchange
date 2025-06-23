@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\LandingRepository;
+use Illuminate\Support\Facades\Log;
 
 class LandingService
 {
@@ -15,6 +16,12 @@ class LandingService
 
     public function getLandingData()
     {
-        return $this->landingRepo->fetchData();
+        Log::info('LandingService@getLandingData called');
+
+        $data = $this->landingRepo->fetchData();
+
+        Log::info('LandingService@getLandingData returning', $data);
+
+        return $data;
     }
 }

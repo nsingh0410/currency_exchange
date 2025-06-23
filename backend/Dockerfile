@@ -1,9 +1,10 @@
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies and SQLite
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev libcurl4-openssl-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath curl
+    git curl zip unzip libpng-dev libonig-dev libxml2-dev \
+    libcurl4-openssl-dev sqlite3 libsqlite3-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath curl
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
